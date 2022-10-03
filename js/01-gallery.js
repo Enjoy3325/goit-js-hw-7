@@ -3,8 +3,9 @@ import { galleryItems } from './gallery-items.js';
 
 const divGallery = document.querySelector('.gallery');
 console.log(galleryItems);
-const renderImage = galleryItems.map(({ preview, original, description }) => {
-  const photo = `<div class="gallery__item">
+const renderImage = galleryItems
+  .map(({ preview, original, description }) => {
+    const photo = `<div class="gallery__item">
   <a class="gallery__link" href="${original}">
     <img
       class="gallery__image"
@@ -14,24 +15,25 @@ const renderImage = galleryItems.map(({ preview, original, description }) => {
     />
   </a>
 </div>`;
-  console.log(photo);
-  return photo;
-});
+    console.log(photo);
+    return photo;
+  })
+  .join('');
 
-divGallery.innerHTML = renderImage.join('');
+divGallery.insertAdjacentElement('afterbegin', renderImage);
 
 divGallery.addEventListener('click', onGalleryClick);
 const instance = basicLightbox.create(`
-    <img src="" width="800" height="600">
+    <img src="${original}" width="800" height="600">
 `);
 function onGalleryClick(e) {
   e.preventDefault();
   if (e.target.nodeName === 'IMG') {
+    instance.element().querySelector('img').src = e.target.dataset.source;
+
+    instance.show();
     return;
   }
-  instance.element().querySelector('img').src = e.target.dataset.source;
-
-  instance.show();
 
   divGallery.addEventListener('keydown', e => {
     if (e.key === 'Escape') {
