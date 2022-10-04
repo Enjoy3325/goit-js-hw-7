@@ -1,11 +1,11 @@
 import { galleryItems } from './gallery-items.js';
 // Change code below this line
-
 const divGallery = document.querySelector('.gallery');
+let instance = null;
 console.log(galleryItems);
-const renderImage = galleryItems
-  .map(({ preview, original, description }) => {
-    const photo = `<div class="gallery__item">
+
+const renderImage = galleryItems.map(({ preview, original, description }) => {
+  const photo = `<div class="gallery__item">
   <a class="gallery__link" href="${original}">
     <img
       class="gallery__image"
@@ -15,29 +15,27 @@ const renderImage = galleryItems
     />
   </a>
 </div>`;
-    console.log(photo);
-    return photo;
-  })
-  .join('');
-
-divGallery.insertAdjacentElement('afterbegin', renderImage);
+  console.log(photo);
+  return photo;
+});
+divGallery.innerHTML = renderImage.join('');
 
 divGallery.addEventListener('click', onGalleryClick);
-const instance = basicLightbox.create(`
-    <img src="${original}" width="800" height="600">
-`);
 function onGalleryClick(e) {
   e.preventDefault();
   if (e.target.nodeName === 'IMG') {
+    instance = basicLightbox.create(`
+    <img src="" width="800" height="600">
+`);
     instance.element().querySelector('img').src = e.target.dataset.source;
-
     instance.show();
-    return;
   }
-
-  divGallery.addEventListener('keydown', e => {
-    if (e.key === 'Escape') {
-      instance.close();
-    }
-  });
+  return;
+}
+window.addEventListener('keydown', clickEscapeClose);
+function clickEscapeClose(e) {
+  if (e.code === 'Escape') {
+    console.log(e);
+    instance.close();
+  }
 }
